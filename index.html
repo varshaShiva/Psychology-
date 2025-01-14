@@ -1,0 +1,174 @@
+Here is the updated code with the new questions and answers:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry AI Chatbox</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #chatbox {
+            width: 400px;
+            height: 600px;
+            border: 1px solid #ccc;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        #input-box {
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+        #input-box input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-right: 1px solid #ccc;
+        }
+        #input-box button {
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        #input-box button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .user {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+        }
+        .ai {
+            background-color: #f1f1f1;
+            align-self: flex-start;
+        }
+    </style>
+    <!-- Load Fuse.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.5.3/dist/fuse.min.js"></script>
+</head>
+<body>
+    <div id="chatbox">
+        <div id="messages"></div>
+        <div id="input-box">
+            <input type="text" id="user-input" placeholder="Ask a question...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const questionsAnswers = [
+            { question: "What is psychology?", answer: "Psychology is the scientific study of the mind and behavior." },
+            { question: "What is the difference between a psychologist and a psychiatrist?", answer: "Psychologists study behavior and mental processes, while psychiatrists are medical doctors who can prescribe medication." },
+            { question: "What are the main goals of psychology?", answer: "The goals are to describe, explain, predict, and control behavior." },
+            { question: "What is the nature vs. nurture debate?", answer: "It’s the debate about whether our traits are influenced more by our genes (nature) or our environment and experiences (nurture)." },
+            { question: "What is classical conditioning?", answer: "It’s a learning process where a neutral stimulus becomes associated with a meaningful stimulus to trigger a response, like Pavlov’s dogs salivating to a bell." },
+            { question: "What is operant conditioning?", answer: "It’s a type of learning where behaviors are influenced by rewards or punishments." },
+            { question: "What is the unconscious mind?", answer: "The unconscious mind holds thoughts, memories, and desires outside of our conscious awareness, but they still influence behavior." },
+            { question: "What is a defense mechanism?", answer: "Defense mechanisms are unconscious strategies that people use to cope with anxiety or stress, like repression or denial." },
+            { question: "What is the placebo effect?", answer: "The placebo effect occurs when people experience real changes after receiving a treatment that has no actual effect, because they believe it works." },
+            { question: "What is the difference between short-term and long-term memory?", answer: "Short-term memory holds information for a short time, while long-term memory stores information for a long time." },
+            { question: "What is the role of the hippocampus in memory?", answer: "The hippocampus helps process and store new memories." },
+            { question: "What is the difference between implicit and explicit memory?", answer: "Implicit memory is unconscious and involves things like habits, while explicit memory is conscious and involves facts and events." },
+            { question: "What is the concept of self-actualization?", answer: "Self-actualization is the process of realizing and fulfilling your potential and being the best version of yourself." },
+            { question: "What is Maslow’s hierarchy of needs?", answer: "It’s a theory that suggests people must satisfy basic needs like food and safety before they can focus on higher needs like love and self-esteem." },
+            { question: "What is the difference between intrinsic and extrinsic motivation?", answer: "Intrinsic motivation comes from within (like personal enjoyment), while extrinsic motivation comes from external rewards (like money or praise)." },
+            { question: "What is the concept of cognitive dissonance?", answer: "Cognitive dissonance happens when someone experiences discomfort because they hold two conflicting beliefs or attitudes." },
+            { question: "What is the bystander effect?", answer: "The bystander effect is when people are less likely to help in an emergency if others are present, assuming someone else will help." },
+            { question: "What is the difference between sensory adaptation and habituation?", answer: "Sensory adaptation is when your senses become less sensitive to constant stimuli, while habituation is when you stop responding to a repeated stimulus." },
+            { question: "What is the difference between a positive and negative reinforcement?", answer: "Positive reinforcement adds a pleasant stimulus to increase behavior, while negative reinforcement removes an unpleasant stimulus to increase behavior." },
+            { question: "What is the concept of social learning theory?", answer: "Social learning theory suggests that people learn by observing others and imitating their behavior." },
+            { question: "What is the role of neurotransmitters in behavior?", answer: "Neurotransmitters are chemicals in the brain that transmit signals between neurons and influence mood, thinking, and behavior." },
+            { question: "What is the fight-or-flight response?", answer: "The fight-or-flight response is the body's automatic reaction to stress, preparing us to either fight or run away from danger." },
+            { question: "What is the difference between longitudinal and cross-sectional studies?", answer: "Longitudinal studies track the same group over time, while cross-sectional studies compare different groups at a single point in time." },
+            { question: "What is the concept of the 'ego' in Freud's theory?", answer: "The ego is the part of the personality that tries to balance the demands of the id (instincts) and the superego (morals)." },
+            { question: "What is the 'id' in Freud's theory?", answer: "The id is the part of the personality that wants immediate pleasure and avoids pain, acting on instinct." },
+            { question: "What is the 'superego' in Freud's theory?", answer: "The superego is the part of the personality that represents moral standards and ideals." },
+            { question: "What is the difference between an intrinsic and extrinsic reward?", answer: "An intrinsic reward is something you get from within (like feeling proud), while an extrinsic reward is something external (like money or trophies)." },
+            { question: "What is the role of the amygdala in emotion?", answer: "The amygdala is a part of the brain that processes emotions like fear and pleasure." },
+            { question: "What is the difference between a psychiatrist and a psychologist?", answer: "A psychiatrist is a medical doctor who can prescribe medication, while a psychologist focuses on therapy and counseling." },
+            { question: "What is social psychology?", answer: "Social psychology is the study of how people’s thoughts, feelings, and behaviors are influenced by others." },
+            { question: "What is conformity?", answer: "Conformity is when someone changes their behavior or beliefs to fit in with a group." },
+            { question: "What is the concept of attachment in child development?", answer: "Attachment is the emotional bond a child forms with their caregiver, which influences their future relationships." },
+            { question: "What is the difference between fear and anxiety?", answer: "Fear is a response to a real, immediate threat, while anxiety is a feeling of unease or worry about something that may or may not happen." },
+            { question: "What is the role of the prefrontal cortex in decision-making?", answer: "The prefrontal cortex helps you make decisions, plan, and control impulses." },
+            { question: "What is the concept of operant extinction?", answer: "Operant extinction happens when a behavior decreases because it’s no longer being reinforced." },
+            { question: "What is cognitive psychology?", answer: "Cognitive psychology is the study of mental processes like perception, memory, and problem-solving." },
+            { question: "What is the difference between positive and negative punishment?", answer: "Positive punishment adds an unpleasant stimulus to decrease behavior, while negative punishment removes a pleasant stimulus to decrease behavior." },
+            { question: "What is the concept of learned helplessness?", answer: "Learned helplessness is when a person feels they have no control over their situation and stops trying to change it." },
+            { question: "What is the difference between an internal and external locus of control?", answer: "Internal locus of control means you believe you can control your own fate, while external locus of control means you believe outside forces control your fate." },
+            { question: "What is the concept of the 'halo effect'?", answer: "The halo effect is when your overall impression of someone influences how you feel about their specific traits." },
+            { question: "What is cognitive dissonance?", answer: "Cognitive dissonance is the discomfort people feel when their beliefs and actions don’t match." },
+            { question: "What is the difference between assimilation and accommodation in Piaget’s theory?", answer: "Assimilation is fitting new information into existing schemas, while accommodation is changing your schemas to fit new information." },
+            { question: "What is the concept of fluid intelligence?", answer: "Fluid intelligence is the ability to think logically and solve problems in new situations, independent of acquired knowledge." },
+            { question: "What is a critical period in development?", answer: "A critical period is a specific time during development when certain skills or abilities are most easily learned." },
+            { question: "What are the 'big five' personality traits?", answer: "The 'big five' personality traits are openness, conscientiousness, extraversion, agreeableness, and neuroticism." }
+        ];
+
+        const greetings = ["hi", "hello", "hey"];
+
+        const fuse = new Fuse(questionsAnswers, {
+            keys: ['question'],
+            threshold: 0.4 // Adjust this value to make the search more or less fuzzy
+        });
+
+        const messagesDiv = document.getElementById('messages');
+
+        function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value.trim().toLowerCase();
+            if (message) {
+                addMessage('user', userInput.value);
+                userInput.value = '';
+                getAIResponse(message);
+            }
+        }
+
+        function addMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            messageDiv.textContent = text;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function getAIResponse(userQuestion) {
+            let answer = "I'm sorry, I don't know the answer to that.";
+
+            // Basic responses for greetings
+            if (greetings.includes(userQuestion)) {
+                answer = "Hi, I am a psychology bot. I can help you with AP Psychology. Ask me anything.";
+            } else {
+                const result = fuse.search(userQuestion);
+                if (result.length > 0) {
+                    answer = result[0].item.answer;
+                }
+            }
+
+            addMessage('ai', answer);
+        }
+    </script>
+</body>
+</html>
+```
